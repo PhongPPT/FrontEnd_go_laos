@@ -1,9 +1,19 @@
 <script setup>
+import { ref } from 'vue'
 import ThemeToggle from './components/ThemeToggle.vue'
 import AppHeader from './components/AppHeader.vue'
 import ApiReference from './components/ApiReference.vue'
 import InteractiveDemo from './components/InteractiveDemo.vue'
+import LaosMap from './components/LaosMap.vue'
 import AppFooter from './components/AppFooter.vue'
+
+const selectedGeo = ref(null)
+
+const handleGeoSelect = (geoItem) => {
+  if (geoItem && geoItem.lat && geoItem.lng) {
+    selectedGeo.value = geoItem
+  }
+}
 </script>
 
 <template>
@@ -15,7 +25,9 @@ import AppFooter from './components/AppFooter.vue'
 
     <ApiReference />
 
-    <InteractiveDemo />
+    <InteractiveDemo @select-geo="handleGeoSelect" />
+    
+    <LaosMap :selected-geo="selectedGeo" />
 
     <AppFooter />
     

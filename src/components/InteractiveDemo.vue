@@ -37,6 +37,8 @@ const copyToClipboard = (text, id) => {
   }, 2000)
 }
 
+const emit = defineEmits(['select-geo'])
+
 const fetchProvinces = async () => {
   loadingProvinces.value = true
   errorProvinces.value = null
@@ -59,6 +61,10 @@ const selectProvince = async (prov) => {
   districts.value = []
   villages.value = []
   
+  if (prov && prov.lat && prov.lng) {
+    emit('select-geo', { ...prov, type: 'province' })
+  }
+  
   loadingDistricts.value = true
   errorDistricts.value = null
   currentEndpoint.value = `${API_URL}/provinces/${prov.id}/districts`
@@ -78,6 +84,10 @@ const selectDistrict = async (dist) => {
   selectedVillage.value = null
   villages.value = []
 
+  if (dist && dist.lat && dist.lng) {
+    emit('select-geo', { ...dist, type: 'district' })
+  }
+
   loadingVillages.value = true
   errorVillages.value = null
   currentEndpoint.value = `${API_URL}/districts/${dist.id}/villages`
@@ -89,6 +99,13 @@ const selectDistrict = async (dist) => {
     errorVillages.value = parseError(err)
   } finally {
     loadingVillages.value = false
+  }
+}
+
+const selectVillage = (vil) => {
+  selectedVillage.value = vil
+  if (vil && vil.lat && vil.lng) {
+    emit('select-geo', { ...vil, type: 'village' })
   }
 }
 
@@ -234,14 +251,18 @@ onMounted(() => {
           </div>
           <div v-else-if="villages.length === 0" class="text-center text-slate-500 dark:text-slate-400 mt-10">ບໍ່ພົບຂໍ້ມູນບ້ານ.</div>
           <div v-else>
-            <div 
+            <button 
               v-for="v in villages" 
               :key="v.id"
-              class="w-full text-left p-4 rounded-xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-slate-300 dark:hover:border-slate-500 transition-colors"
+              @click="selectVillage(v)"
+              :class="['w-full text-left p-4 rounded-xl transition-all duration-200 border', 
+                selectedVillage?.id === v.id 
+                  ? 'bg-blue-500 text-white border-blue-500 shadow-md transform scale-[1.02]' 
+                  : 'bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 border-slate-100 dark:border-slate-700 hover:border-blue-500/30 dark:hover:border-blue-500/50 text-slate-700 dark:text-slate-300']"
             >
               <div class="font-semibold">{{ v.name }}</div>
               <div class="text-sm opacity-80">{{ v.name_en }}</div>
-            </div>
+            </button>
           </div>
         </div>
       </div>
