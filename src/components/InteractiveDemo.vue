@@ -22,7 +22,7 @@ const parseError = (err) => {
   if (err.response && err.response.status === 429) {
     return '⚠️ ທ່ານຮ້ອງຂໍຂໍ້ມູນໄວເກີນໄປ. ກະລຸນາລໍຖ້າຈັກໜ້ອຍແລ້ວລອງໃໝ່.'
   }
-  return '🔌 ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບເຊີບເວີໄດ້ໃນຂະນະນີ້.'
+  return '🔌 ເກີດຂໍ້ຜິດພາດ ກະລຸນາລອງໃໝ່ພາຍຫລັງ.'
 }
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1'
